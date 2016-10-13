@@ -19,7 +19,7 @@ class Chef
           report_results[:reports][profile.name] = profile.execute
         end
         report_results[:profile] = profile_owners_by_profile
-        server_connection.report report_results
+        server_connection.report report_results if !node['audit']['server'].nil?
         audit_scheduler.record_completed_run
       end
 

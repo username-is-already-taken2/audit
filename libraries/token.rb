@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 # `compliance_token` custom resource to communicate with Chef Compliance
-class Audit
+module Audit
   class Resource
     class ComplianceToken < Chef::Resource
       include ComplianceHelpers

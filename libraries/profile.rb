@@ -6,7 +6,7 @@ require 'fileutils'
 
 # `compliance_profile` custom resource to collect and run Chef Compliance
 # profiles
-class Audit
+module Audit
   class Resource
     class ComplianceProfile < Chef::Resource
       include ComplianceHelpers

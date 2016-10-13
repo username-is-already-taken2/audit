@@ -1,7 +1,7 @@
 # encoding: utf-8
 # `compliance_report` custom resource to run Chef Compliance profiles and
 # send reports to Chef Compliance
-class Audit
+module Audit
   class Resource
     class ComplianceReport < Chef::Resource
       include ComplianceHelpers

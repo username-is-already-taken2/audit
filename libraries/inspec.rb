@@ -1,5 +1,5 @@
 # encoding: utf-8
-class Audit
+module Audit
   class Resource
     class ChefInspec < Chef::Resource
       resource_name :inspec

@@ -57,7 +57,7 @@ directory compliance_cache_directory do
 end
 
 handler_directory = ::File.join(Chef::Config[:file_cache_path], 'handler')
-directory compliance_cache_directory do
+directory handler_directory do
   action :create
 end
 
@@ -83,6 +83,11 @@ node['audit']['profiles'].each do |owner_profile, value|
        "Must contain /, e.g. 'john/ssh'" if owner_profile !~ %r{\/}
   o, p = owner_profile.split('/').last(2)
 
+  # file that can be used for interval triggering
+  file "#{compliance_cache_directory}/#{p}" do
+    action :nothing
+  end
+
   # execute profile
   compliance_profile p do
     owner o
@@ -90,7 +95,7 @@ node['audit']['profiles'].each do |owner_profile, value|
     server server
     path path unless path.nil?
     quiet node['audit']['quiet'] unless node['audit']['quiet'].nil?
-    only_if { profile_overdue_to_run?(p, interval_seconds) }
+    # only_if { profile_overdue_to_run?(p, interval_seconds) }
     action [:fetch, :execute]
     notifies :touch, "file[#{compliance_cache_directory}/#{p}]", :immediately
   end

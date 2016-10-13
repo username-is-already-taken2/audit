@@ -22,7 +22,7 @@ module Audit
       reqpath ="owners/#{profile.owner}/compliance/#{profile.name}/tar"
       url = construct_url(server, reqpath)
       Chef::Log.warn "Load #{profile} from compliance server: #{url}"
-      tf = Tempfile.new('foo', Dir.tmpdir, 'wb+')
+      tf = Tempfile.create('foo') #, Dir.tmpdir, 'wb+')
       tf.binmode
       opts = { use_ssl: url.scheme == 'https',
                verify_mode: OpenSSL::SSL::VERIFY_NONE, # FIXME
@@ -58,8 +58,8 @@ module Audit
     end
 
     def report(report_results)
-      Chef::Log.info "Reporting results of run to owner #{owner} on compliance server"
-      url = construct_url(server, ::File.join('/owners', owner, 'inspec'))
+      Chef::Log.info "Reporting results of run to owner #{@owner} on compliance server"
+      url = construct_url(server, ::File.join('/owners', @owner, 'inspec'))
       req = Net::HTTP::Post.new(url, { 'Authorization' => "Bearer #{access_token}" })
       req.body = report_results.to_json
       Chef::Log.info "Report to: #{url}"

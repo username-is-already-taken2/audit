@@ -43,10 +43,31 @@ if !node['audit']['interval'].nil? && node['audit']['interval']['enabled']
   Chef::Log.debug "Auditing this machine every #{interval_seconds} seconds "
 end
 
+inspec_version = node['audit']['inspec_version']
+
+chef_gem 'inspec' do
+  version inspec_version if inspec_version != 'latest'
+  compile_time true
+end
+
 # ensure profile cache directory is available
 compliance_cache_directory = ::File.join(Chef::Config[:file_cache_path], 'compliance')
 directory compliance_cache_directory do
   action :create
+end
+
+handler_directory = ::File.join(Chef::Config[:file_cache_path], 'handler')
+directory compliance_cache_directory do
+  action :create
+end
+
+cookbook_file ::File.join(handler_directory, 'audit_report.rb') do
+  source 'audit_report.rb'
+end
+
+chef_handler 'Chef::Handler::AuditReport' do
+  source "#{handler_directory}/audit_report"
+  action :enable
 end
 
 # iterate over all selected profiles and download them
@@ -61,11 +82,6 @@ node['audit']['profiles'].each do |owner_profile, value|
   raise "Invalid profile name '#{owner_profile}'. "\
        "Must contain /, e.g. 'john/ssh'" if owner_profile !~ %r{\/}
   o, p = owner_profile.split('/').last(2)
-
-  # file that can be used for interval triggering
-  file "#{compliance_cache_directory}/#{p}" do
-    action :nothing
-  end
 
   # execute profile
   compliance_profile p do

@@ -70,3 +70,5 @@ Style/SpaceAroundOperators:
   Enabled: false
 Style/IfUnlessModifier:
   Enabled: false
+Style/SignalException:
+  Enabled: false

@@ -16,7 +16,7 @@
 # limitations under the License.
 
 # inspec gem version to install(e.g. '1.1.0')
-default['audit']['inspec_version'] = '1.5.0'
+default['audit']['inspec_version'] = '1.6.0'
 
 # URI to alternate gem source (e.g. 'http://gems.server.com')
 # root of location must host the *specs.4.8.gz source index
